@@ -1,0 +1,20 @@
+{
+  "name": "smartfolio",
+  "version": "1.0.0",
+  "description": "Smartfolio is an application that converts your LinkedIn and GitHub profiles into an Autobase API",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Vishok M",
+  "license": "MIT",
+  "dependencies": {
+    "chalk": "^5.3.0",
+    "commander": "^12.1.0",
+    "csv-stringify": "^6.5.1",
+    "inquirer": "^10.1.8",
+    "sentiment": "^5.0.2"
+  },
+  "bin": "index.js"
+}
