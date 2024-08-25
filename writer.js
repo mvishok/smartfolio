@@ -15,7 +15,7 @@ export default function create(profile, projects, repositories, certificates, wo
     }
 
     //create .env file
-    writeFileSync(cdir + "/smartfolio/.env", `SE_AUTH={"${token}":"write"}`);
+    writeFileSync(cdir + "/smartfolio/.env", `AB_AUTH={"${token}":"write"}`);
 
     //create config.json file
     const config = {
