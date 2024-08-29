@@ -7,8 +7,9 @@ import { join, resolve } from "path";
 import chalk from "chalk";
 import inquirer from "inquirer";
 import create from "./writer.js";
+import write from "./json.js";
 
-//get current path
+//get current pathaas
 const currentPath = process.cwd();
 
 const languages = {};
@@ -55,9 +56,10 @@ async function projectsParse(linkedinData, githubData) {
         languagesUsed = await languagesUsed.json();
 
         for (let language in languagesUsed) {
-            //if language is present in the languages object, add the bytes to it
             if (languages[language.toLocaleLowerCase()] !== undefined) {
                 languages[language.toLocaleLowerCase()] += languagesUsed[language];
+            } else {
+                languages[language.toLocaleLowerCase()] = languagesUsed[language];
             }
         }
         
@@ -126,7 +128,9 @@ program
 
 program.command("generate")
     .description("Generate a new Autobase API from your LinkedIn and GitHub profiles")
-    .action(async () => {
+    .option("-j, --json", "Export as json")
+    .action(async (options) => {
+
         const profile = {};
 
         //instruct user on how to export linkedin to json
@@ -166,6 +170,11 @@ program.command("generate")
         } catch (error) {
             console.log(chalk.red("The file is not a valid JSON file. Please try again."));
             console.error(error);
+            return;
+        }
+
+        if (existsSync(join(currentPath, "smartfolio"))) {
+            console.log(chalk.red("The folder smartfolio already exists. Please try on a different directory."));
             return;
         }
 
@@ -232,12 +241,16 @@ program.command("generate")
 
         workParse(linkedinData);
 
-        if (create(profile, projects, repositories, certificates, work, education, currentPath)){
-            console.log(chalk.blue("Please run the following command to start the server:"));
-            console.log(chalk.blue("cd " + currentPath + "/smartfolio"));
-            console.log(chalk.blue("autobase config.json"));
+        if (options.json){
+            write(profile, projects, repositories, certificates, work, education, currentPath);
         } else {
-            console.log(chalk.red("An error occurred while creating the files. Please try again."));
+            if (create(profile, projects, repositories, certificates, work, education, currentPath)){
+                console.log(chalk.blue("Please run the following command to start the server:"));
+                console.log(chalk.blue("cd " + currentPath + "/smartfolio"));
+                console.log(chalk.blue("autobase config.json"));
+            } else {
+                console.log(chalk.red("An error occurred while creating the files. Please try again."));
+            }
         }
     });
 
